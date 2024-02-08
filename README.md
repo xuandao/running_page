@@ -95,6 +95,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
+
 </details>
 
 ## How it works
@@ -394,7 +395,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn -
 <br>
 
 - If you only want to sync `type running` add args --only-run
-**The Python version must be >=3.10**
+  **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 

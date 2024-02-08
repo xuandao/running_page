@@ -49,7 +49,7 @@ const Index = () => {
   ) => {
     scrollToMap();
     if (name != 'Year') {
-      setYear(thisYear)
+      setYear(thisYear);
     }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
@@ -151,9 +151,9 @@ const Index = () => {
         const titleEl = target.querySelector('title');
         if (titleEl) {
           // If the runDate exists in the <title> element, it means that a date square has been clicked.
-          const [runDate] = titleEl.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
-            `${+thisYear + 1}`,
-          ];
+          const [runDate] = titleEl.innerHTML.match(
+            /\d{4}-\d{1,2}-\d{1,2}/
+          ) || [`${+thisYear + 1}`];
           const runIDsOnDate = runs
             .filter((r) => r.start_date_local.slice(0, 10) === runDate)
             .map((r) => r.run_id);
@@ -163,7 +163,7 @@ const Index = () => {
           locateActivity(runIDsOnDate);
         }
       }
-    }
+    };
     svgStat.addEventListener('click', handleClick);
     return () => {
       svgStat && svgStat.removeEventListener('click', handleClick);
