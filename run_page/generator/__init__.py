@@ -26,6 +26,8 @@ class Generator:
         self.client_secret = ""
         self.refresh_token = ""
         self.only_run = False
+        # 记录新创建的活动ID列表
+        self.new_activity_ids = []
 
     def set_strava_config(self, client_id, client_secret, refresh_token):
         self.client_id = client_id
@@ -67,6 +69,7 @@ class Generator:
                 activity.summary_polyline = filter_out(activity.summary_polyline)
             created = update_or_create_activity(self.session, activity)
             if created:
+                self.new_activity_ids.append(int(activity.id))
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
@@ -86,6 +89,7 @@ class Generator:
         for t in tracks:
             created = update_or_create_activity(self.session, t.to_namedtuple())
             if created:
+                self.new_activity_ids.append(int(t.id))
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
@@ -105,6 +109,7 @@ class Generator:
         for t in app_tracks:
             created = update_or_create_activity(self.session, t)
             if created:
+                self.new_activity_ids.append(int(t.id))
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
