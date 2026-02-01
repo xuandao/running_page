@@ -19,11 +19,12 @@ on:
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/strava_to_garmin_sync.py
       - requirements.txt
 
 env:
   # please change to your own config.
-  RUN_TYPE: strava # support strava/nike/garmin/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  RUN_TYPE: strava_with_garmin_cn # support strava/nike/garmin/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/strava_with_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: xuandao
   TITLE: xuandao Running
   MIN_GRID_DISTANCE: 10 # change min distance here
@@ -135,7 +136,6 @@ jobs:
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
 
-      
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
         run: |
@@ -160,6 +160,28 @@ jobs:
         if: env.RUN_TYPE == 'strava_to_garmin_cn'
         run: |
           python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+
+      # Strava sync + backup to Garmin CN
+      - name: Run Strava sync with Garmin CN backup
+        if: env.RUN_TYPE == 'strava_with_garmin_cn'
+        run: |
+          echo "Step 1/2: Syncing Strava data to local for display..."
+          python run_page/strava_sync.py \
+            ${{ secrets.STRAVA_CLIENT_ID }} \
+            ${{ secrets.STRAVA_CLIENT_SECRET }} \
+            ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+
+          echo "Step 2/2: Backing up Strava data to Garmin CN..."
+          python run_page/strava_to_garmin_sync.py \
+            ${{ secrets.STRAVA_CLIENT_ID }} \
+            ${{ secrets.STRAVA_CLIENT_SECRET }} \
+            ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} \
+            ${{ secrets.GARMIN_SECRET_STRING_CN }} \
+            ${{ secrets.STRAVA_EMAIL }} \
+            ${{ secrets.STRAVA_PASSWORD }} \
+            --is-cn
+
+          echo "Strava sync with Garmin CN backup completed!"
 
       - name: Run sync Garmin-cn to Strava(Run with Garmin data backup in Strava)
         if: env.RUN_TYPE == 'garmin_to_strava_cn'
